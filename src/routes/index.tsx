@@ -5,6 +5,7 @@ import {
   Music, BookOpen, Palette, Sun, Cloud, Flower2, Volume2, VolumeX,
 } from "lucide-react";
 import yonnaImg from "@/assets/yonna-dance.jpg";
+import ambientMp3 from "@/assets/ambient.mp3";
 import playingImg from "@/assets/children-playing.jpg";
 import greetingImg from "@/assets/wayuu-greeting.jpg";
 
@@ -31,8 +32,7 @@ type Section = {
   descripcion: React.ReactNode;
 };
 
-const BASE = (import.meta as any).env?.BASE_URL ?? "/";
-const audioSrc = `${BASE}audio/ambient.mp3`.replace("//", "/");
+const audioSrc = ambientMp3;
 
 const sections: Section[] = [
   {
@@ -182,6 +182,7 @@ function WayuuPattern() {
 function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = 0.25;
@@ -192,21 +193,35 @@ function MusicPlayer() {
     if (!a) return;
     try {
       if (playing) { a.pause(); setPlaying(false); }
-      else { await a.play(); setPlaying(true); }
-    } catch { /* autoplay blocked */ }
+      else { await a.play(); setPlaying(true); setError(false); }
+    } catch (e) {
+      console.error("Audio play failed:", e);
+      setError(true);
+    }
   };
 
   return (
     <>
-      <audio ref={audioRef} src={audioSrc} loop preload="auto" />
+      <audio
+        ref={audioRef}
+        src={audioSrc}
+        loop
+        preload="auto"
+        onError={(e) => { console.error("Audio error:", e); setError(true); }}
+      />
       <button
         onClick={toggle}
-        aria-label={playing ? "Pausar música" : "Reproducir música ambiental"}
+        aria-label={playing ? "Pausar música" : "Reproducir música"}
         className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[var(--wayuu-red)] px-4 py-3 text-white shadow-[var(--shadow-playful)] transition-transform hover:scale-105"
       >
         {playing ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-        <span className="text-sm font-bold">{playing ? "Música" : "Ambientar"}</span>
+        <span className="text-sm font-bold">Música</span>
       </button>
+      {error && (
+        <div className="fixed bottom-20 right-5 z-50 max-w-xs rounded-xl bg-white p-3 text-xs shadow-lg">
+          No se pudo cargar el audio.
+        </div>
+      )}
     </>
   );
 }
