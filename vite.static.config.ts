@@ -3,12 +3,13 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 
-// Plain SPA build for static hosting (e.g. GitHub Pages).
-// Independent from the TanStack Start / Cloudflare config used in dev.
+// Pure Vite SPA build for static hosting (GitHub Pages).
+// Repo name: accionespedagogicas -> base path /accionespedagogicas/
+// Run: npm run build:static  (or: BASE_URL=/ npm run build:static for root domain)
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   root: path.resolve(__dirname, "static"),
-  base: process.env.BASE_URL || "/",
+  base: process.env.BASE_URL || "/accionespedagogicas/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
