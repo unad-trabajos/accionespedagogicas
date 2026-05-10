@@ -5,7 +5,7 @@ import {
   Music, BookOpen, Palette, Sun, Cloud, Flower2, Volume2, VolumeX,
 } from "lucide-react";
 import yonnaImg from "@/assets/yonna-dance.jpg";
-import ambientMp3 from "/audio/ambient.mp3?url";
+import ambientMp3 from "@/assets/ambient.mp3";
 import playingImg from "@/assets/children-playing.jpg";
 import greetingImg from "@/assets/wayuu-greeting.jpg";
 
